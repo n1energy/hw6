@@ -12,19 +12,22 @@ if typing.TYPE_CHECKING:
 
 class AdminAccessor(BaseAccessor):
     async def connect(self, app: "Application"):
-        await self.create_admin(email=self.app.config.admin.email, password=self.app.config.admin.password)
-    
+        admin = await self.get_by_email(email=self.app.config.admin.email)
+        if not admin:  
+            await self.create_admin(email=app.config.admin.email, password=app.config.admin.password)
+
     async def get_by_email(self, email: str) -> Admin | None:
         async with self.app.database.session.begin() as s:
-            query = select(AdminModel).where(AdminModel.email==email)
-            admin = s.scalars(query)
+            query = select(AdminModel).where(AdminModel.email == email)
+            result = await s.execute(query)
+            admin = result.scalars().first()
             if admin:
-                return admin
+                return admin.to_dataclass()
 
     async def create_admin(self, email: str, password: str) -> Admin:
         encoded_password = sha256(str(password).encode()).hexdigest()
         admin = AdminModel(email=email, password=encoded_password)
-        async with self.app.database.session.begin() as s:
-            s.add(admin)
-            await s.commit
-        return admin
+        async with self.app.database.session() as s:
+                s.add(admin)
+                await s.commit()
+        return admin.to_dataclass()

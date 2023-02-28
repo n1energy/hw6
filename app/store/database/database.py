@@ -20,7 +20,7 @@ class Database:
     async def connect(self, *_: list, **__: dict) -> None:
         self._db = db
         self._engine = create_async_engine(DATABASE_URL, echo=True, future=True)
-        self.session = sessionmaker(self._engine, expire_on_commit=False, autoflush=True, class_=AsyncSession)
+        self.session = sessionmaker(self._engine, expire_on_commit=False, class_=AsyncSession)
         self.app.logger.info("Database connected")
 
     async def disconnect(self, *_: list, **__: dict) -> None:

@@ -14,9 +14,11 @@ class AdminLoginView(View):
         admin = await self.store.admins.get_by_email(self.data['email'])
         if not admin or not admin.is_password_valid(self.data['password']):
             raise HTTPForbidden
-        admin_json = AdminSchema().dump(admin)
-        # session['admin'] = admin_json
-        return json_response(data=admin_json)
+        admin_data = AdminSchema().dump(admin)
+        response = json_response(data=admin_data)
+        session = await new_session(request=self.request)
+        session["admin"] = admin_data
+        return response
 
 
 class AdminCurrentView(View):

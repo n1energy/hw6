@@ -27,3 +27,6 @@ class AdminModel(db):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False, unique=True)
 
+    def to_dataclass(self) -> Admin:
+        return Admin(id=self.id, email=self.email, password=self.password)
+

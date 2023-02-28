@@ -27,7 +27,7 @@ class AdminAccessor(BaseAccessor):
     async def create_admin(self, email: str, password: str) -> Admin:
         encoded_password = sha256(str(password).encode()).hexdigest()
         admin = AdminModel(email=email, password=encoded_password)
-        async with self.app.database.session() as s:
+        async with self.app.database.session.begin() as s:
                 s.add(admin)
                 await s.commit()
         return admin.to_dataclass()

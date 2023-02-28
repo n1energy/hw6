@@ -6,13 +6,13 @@ admin:
   email: admin@admin.com
   password: admin
 database:
-  host: 127.0.0.1
+  host: 0.0.0.0
   port: 5432
   user: postgres
   password: postgres
   database: postgres
 bot:
-  token: group_token
-  group_id: 1
+  token: d93e995056f0080383e0fd06f2a0c9ccc3353dda6758b99fcee56f6ab4a9ee46035078912e8b0b104acbd
+  group_id: 210606818
 
 
